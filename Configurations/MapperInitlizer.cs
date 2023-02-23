@@ -10,6 +10,10 @@ namespace MusicAPI.Configurations
         {
             CreateMap<Artist, ArtistDTO>().ReverseMap();
             CreateMap<Artist, CreateArtistDTO>().ReverseMap();
+            CreateMap<Genre, GenreDTO>().ReverseMap();
+            CreateMap<Genre, CreateGenreDTO>().ReverseMap(); 
+            CreateMap<Album, AlbumDTO>().ReverseMap();
+            CreateMap<Album, CreateAlbumDTO>().ReverseMap();
         }
     }
 }

@@ -1,20 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MusicAPI.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace MusicAPI.DTOs
 {
-    public class CreateArtistDTO
+    public class CreateGenreDTO
     {
         [Required]
-        public string ArtistName { get; set; }
+        public string GenreName { get; set; }
     }
 
-    public class UpdateArtistDTO : CreateArtistDTO
+    public class UpdateGenreDTO:CreateGenreDTO
     {
         public virtual IList<CreateAlbumDTO> Albums { get; set; }
     }
-    public class ArtistDTO:CreateArtistDTO
+    public class GenreDTO:CreateGenreDTO
     {
         public int Id { get; set; }
         public virtual IList<AlbumDTO> Albums { get; set; }
+
     }
 }

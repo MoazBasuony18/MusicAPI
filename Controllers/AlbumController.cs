@@ -9,31 +9,31 @@ namespace MusicAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ArtistController : ControllerBase
+    public class AlbumController : ControllerBase
     {
-        private readonly ILogger<ArtistController> logger;
+        private readonly ILogger<AlbumController> logger;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-        public ArtistController(ILogger<ArtistController> logger, IUnitOfWork unitOfWork, IMapper mapper)
+        public AlbumController(ILogger<AlbumController> logger, IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.logger = logger;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
         [HttpGet]
-        public async Task<IActionResult> GetArtistes()
+        public async Task<IActionResult> GetAlbums()
         {
-            var artistes = await unitOfWork.Artists.GetAllAsync();
-            var results = mapper.Map<IList<ArtistDTO>>(artistes);
+            var albums = await unitOfWork.Albums.GetAllAsync();
+            var results = mapper.Map<IList<AlbumDTO>>(albums);
             return Ok(results);
         }
 
-        [HttpGet("{id:int}", Name = "GetArtist")]
-        public async Task<IActionResult> GetArtist(int id)
+        [HttpGet("{id:int}", Name = "GetAlbum")]
+        public async Task<IActionResult> GetAlbum(int id)
         {
-            var artist = await unitOfWork.Artists.GetAsync(q => q.Id == id, new List<string> { "Albums" });
-            var result = mapper.Map<ArtistDTO>(artist);
+            var album = await unitOfWork.Albums.GetAsync(q => q.Id == id);
+            var result = mapper.Map<AlbumDTO>(album);
             return Ok(result);
         }
 
@@ -41,55 +41,55 @@ namespace MusicAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateArtist([FromBody] CreateArtistDTO artistDTO)
+        public async Task<IActionResult> CreateAlbum([FromBody] CreateAlbumDTO albumDTO)
         {
             if (!ModelState.IsValid)
             {
-                logger.LogError($"Invaild Post Attempt for {nameof(CreateArtist)}");
+                logger.LogError($"Invaild Post Attempt for {nameof(CreateAlbum)}");
                 return BadRequest(ModelState);
             }
-            var artist = mapper.Map<Artist>(artistDTO);
-            await unitOfWork.Artists.AddAsync(artist);
+            var album = mapper.Map<Album>(albumDTO);
+            await unitOfWork.Albums.AddAsync(album);
             await unitOfWork.Save();
-            return CreatedAtRoute("GetArtist", new { id = artist.Id }, artist);
+            return CreatedAtRoute("GetAlbum", new { id = album.Id }, album);
         }
 
         [HttpPut("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateArtist(int id, [FromBody] UpdateArtistDTO artistDTO)
+        public async Task<IActionResult> UpdateAlbum(int id, [FromBody] UpdateAlbumDTO albumDTO)
         {
             if (!ModelState.IsValid || id < 1)
             {
                 return BadRequest(ModelState);
             }
-            var artist = await unitOfWork.Artists.GetAsync(q => q.Id == id);
-            if (artist == null)
+            var album = await unitOfWork.Albums.GetAsync(q => q.Id == id);
+            if (album == null)
             {
-                logger.LogError($"Invaild Update Attempt for {nameof(UpdateArtist)}");
+                logger.LogError($"Invaild Update Attempt for {nameof(UpdateAlbum)}");
                 return BadRequest("Submitted is invaild");
             }
-            mapper.Map(artistDTO, artist);
-            unitOfWork.Artists.UpdateAsync(artist);
+            mapper.Map(albumDTO, album);
+            unitOfWork.Albums.UpdateAsync(album);
             await unitOfWork.Save();
             return NoContent();
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult>DeleteArtist(int id)
+        public async Task<IActionResult> DeleteAlbum(int id)
         {
             if (id < 1)
             {
                 return BadRequest(ModelState);
             }
-            var artist=await unitOfWork.Artists.GetAsync(q => q.Id == id);
-            if (artist == null)
+            var album = await unitOfWork.Albums.GetAsync(q => q.Id == id);
+            if (album == null)
             {
-                logger.LogError($"Invaild Delete Attempt for {nameof(DeleteArtist)}");
+                logger.LogError($"Invaild Delete Attempt for {nameof(DeleteAlbum)}");
                 return BadRequest("Submitted is invaild");
             }
-            await unitOfWork.Artists.DeleteAsync(id);
+            await unitOfWork.Genres.DeleteAsync(id);
             await unitOfWork.Save();
             return NoContent();
         }
